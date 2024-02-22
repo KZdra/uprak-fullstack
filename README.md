@@ -1,4 +1,4 @@
-# vju
+# uPREAK FULLSTACKS
 
 ## Project setup
 ```
