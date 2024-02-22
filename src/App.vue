@@ -2,7 +2,7 @@
   <div>
     <nav class="navbar navbar-expand-md navbar-light fixed-top bg-light">
       <div class="container">
-        <a class="navbar-brand" href="#"><img src="https://www.vectorlogo.zone/logos/expressjs/expressjs-ar21.svg" alt="" height="60px">&nbsp; + <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Vue.js_Logo_2.svg/512px-Vue.js_Logo_2.svg.png" alt="" height="60px"></a>
+        <a class="navbar-brand" href="/"><img src="https://www.vectorlogo.zone/logos/expressjs/expressjs-ar21.svg" alt="" height="60px">&nbsp; + <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Vue.js_Logo_2.svg/512px-Vue.js_Logo_2.svg.png" alt="" height="60px"></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
           aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
