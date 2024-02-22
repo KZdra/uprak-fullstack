@@ -32,6 +32,7 @@ navigate to api folder or run
 
 
 ## Screenshots
+![ss](https://github.com/KZdra/uprak-fullstack/assets/92752408/d2ac527f-37e2-4b5d-b2b0-6783fa9dd89c)
 
 
 
