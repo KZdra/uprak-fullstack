@@ -106,8 +106,8 @@ export default {
     // Vue route
     const route = useRoute()
 
-    // State untuk menyimpan apakah gambar lama akan dipertahankan
-    const keepImage = ref(false);
+    // State untuk menyimpan informasi gambar yang akan diunggah
+    const uploadedImage = ref(null);
 
     // Mounted
     onMounted(() => {
@@ -131,45 +131,43 @@ export default {
         })
     })
 
-    // Method update
-   // Method update
-function update() {
-  let formData = new FormData();
-  formData.append('nis', post.nis);
-  formData.append('nama', post.nama);
-  formData.append('jenis_kelamin', post.jenis_kelamin);
-  formData.append('tempat_lahir', post.tempat_lahir);
-  formData.append('tanggal_lahir', post.tanggal_lahir);
-  formData.append('no_hp', post.no_hp);
-  formData.append('alamat', post.alamat);
-  formData.append('nama_ortu', post.nama_ortu);
-
-  // Periksa apakah ada file gambar yang diunggah
-  if (post.gambar === null) {
-    // Jika tidak ada file yang diunggah, gunakan gambar yang sudah ada
-    formData.append('gambar', post.gambar);
-  } else {
-    formData.append('gambar', post.gambar); // Jika ada, gunakan gambar yang diunggah
-  }
-
-  axios.put(`http://127.0.0.1:3000/edit/${route.params.id}`, formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data'
-    }
-  }).then(() => {
-    router.push({ name: 'posts.index' });
-  }).catch(error => {
-    validation.value = error.response.data;
-  });
-}
-
-
     // Method untuk menangani perubahan file gambar
     function onFileChange(event) {
       const file = event.target.files[0];
       if (file) {
-        post.gambar = file;
+        uploadedImage.value = file;
       }
+    }
+
+    // Method update
+    function update() {
+      let formData = new FormData();
+      formData.append('nis', post.nis);
+      formData.append('nama', post.nama);
+      formData.append('jenis_kelamin', post.jenis_kelamin);
+      formData.append('tempat_lahir', post.tempat_lahir);
+      formData.append('tanggal_lahir', post.tanggal_lahir);
+      formData.append('no_hp', post.no_hp);
+      formData.append('alamat', post.alamat);
+      formData.append('nama_ortu', post.nama_ortu);
+
+      // Periksa apakah ada file gambar yang diunggah atau tidak
+      if (uploadedImage.value !== null) {
+        formData.append('gambar', uploadedImage.value);
+      } else {
+        // Jika tidak ada gambar yang diunggah, kirim null untuk menyatakan gambar tidak diubah
+        formData.append('gambar', null);
+      }
+
+      axios.patch(`http://127.0.0.1:3000/patch/${route.params.id}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }).then(() => {
+        router.push({ name: 'posts.index' });
+      }).catch(error => {
+        validation.value = error.response.data;
+      });
     }
 
     // Return
@@ -178,8 +176,7 @@ function update() {
       validation,
       router,
       update,
-      onFileChange,
-      keepImage // Return keepImage untuk menangani opsi "Keep Current Image"
+      onFileChange
     }
   }
 }

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 'use strict';
 
 var response = require('./res');
@@ -36,7 +37,8 @@ const path = require('path');
 const storage = multer.diskStorage({
     destination: './uploads/', // Folder untuk menyimpan gambar
     filename: function(req, file, cb){
-        cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
     }
 });
 
@@ -135,6 +137,64 @@ exports.editData = function (req, res) {
 };
 
 
+exports.patchData = function (req, res) {
+    const id = req.params.id; // Mengambil id dari parameter URL
+
+    upload(req, res, function(err) {
+        if(err) {
+            console.error(err);
+            return res.status(500).json({
+                status: false,
+                message: 'Internal Server Error',
+            });
+        } else {
+            const updatedData = {};
+
+            // Cek setiap bidang yang diterima dari permintaan PATCH
+            if (req.body.nis) updatedData.nis = req.body.nis;
+            if (req.body.nama) updatedData.nama = req.body.nama;
+            if (req.body.jenis_kelamin) updatedData.jenis_kelamin = req.body.jenis_kelamin;
+            if (req.body.tempat_lahir) updatedData.tempat_lahir = req.body.tempat_lahir;
+            if (req.body.tanggal_lahir) updatedData.tanggal_lahir = req.body.tanggal_lahir;
+            if (req.body.no_hp) updatedData.no_hp = req.body.no_hp;
+            if (req.body.alamat) updatedData.alamat = req.body.alamat;
+            if (req.body.nama_ortu) updatedData.nama_ortu = req.body.nama_ortu;
+            if (req.file) updatedData.gambar = req.file.filename; // Jika ada file gambar baru
+
+            // Periksa apakah ada bidang yang akan diperbarui
+            if (Object.keys(updatedData).length === 0) {
+                return res.status(400).json({
+                    status: false,
+                    message: 'No fields to update',
+                });
+            }
+
+            // Gunakan parameterized query untuk mencegah SQL injection
+            connection.query('UPDATE SISWA SET ? WHERE id = ?', [updatedData, id], function (err, result) {
+                if (err) {
+                    console.error("Error updating data:", err);
+                    return res.status(500).json({
+                        status: false,
+                        message: 'Internal Server Error',
+                    });
+                } else {
+                    console.log("Rows affected:", result.affectedRows);
+                    if (result.affectedRows === 0) {
+                        // Tidak ada baris yang terpengaruh, artinya sumber daya dengan ID yang diberikan tidak ditemukan
+                        return res.status(404).json({
+                            status: false,
+                            message: 'Resource not found',
+                        });
+                    }
+                    return res.status(200).json({
+                        status: true,
+                        message: 'Update Data Successfully!',
+                    });
+                }
+            });
+        }
+    });
+};
 
 
 exports.deleteData = function (req, res) {

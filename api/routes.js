@@ -13,7 +13,9 @@ module.exports = function (app) {
     .post(jsonku.tambahData);
     app.route('/edit/:id')
     .put(jsonku.editData);
+    app.route('/patch/:id')
+    .patch(jsonku.patchData);
     app.route('/delete/:id')
-    .delete(jsonku.deleteData)
+    .delete(jsonku.deleteData);
 
 }
