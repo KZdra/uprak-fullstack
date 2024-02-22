@@ -13,7 +13,7 @@
                 </li>
               </ul>
             </div>
-            <form @submit.prevent="store">
+            <form @submit.prevent="store" enctype="multipart/form-data"> <!-- Menambahkan enctype="multipart/form-data" untuk mengunggah file -->
               <div class="form-group">
                 <label for="nis" class="font-weight-bold mb-2">NIS</label>
                 <input
@@ -88,6 +88,15 @@
                   placeholder="Masukkan Nama Orang Tua"
                 />
               </div>
+              <div class="form-group mt-3">
+                <label for="gambar" class="font-weight-bold mb-2">Gambar</label>
+                <input
+                  type="file"
+                  class="form-control"
+                  accept="image/*"
+                  @change="onFileChange"
+                />
+              </div>
               <button type="submit" class="btn btn-primary mt-3">SIMPAN</button>
             </form>
           </div>
@@ -114,7 +123,8 @@ export default {
       tanggal_lahir: "",
       no_hp: "",
       alamat: "",
-      nama_ortu: ""
+      nama_ortu: "",
+      gambar: null // Menambahkan state untuk menyimpan file gambar
     });
 
     //state validation
@@ -125,25 +135,22 @@ export default {
 
     //method store
     function store() {
-      let nis = post.nis;
-      let nama = post.nama;
-      let jenis_kelamin = post.jenis_kelamin;
-      let tempat_lahir = post.tempat_lahir;
-      let tanggal_lahir = post.tanggal_lahir;
-      let no_hp = post.no_hp;
-      let alamat = post.alamat;
-      let nama_ortu = post.nama_ortu;
+      let formData = new FormData();
+      formData.append('nis', post.nis);
+      formData.append('nama', post.nama);
+      formData.append('jenis_kelamin', post.jenis_kelamin);
+      formData.append('tempat_lahir', post.tempat_lahir);
+      formData.append('tanggal_lahir', post.tanggal_lahir);
+      formData.append('no_hp', post.no_hp);
+      formData.append('alamat', post.alamat);
+      formData.append('nama_ortu', post.nama_ortu);
+      formData.append('gambar', post.gambar); // Mengirimkan file gambar
 
       axios
-        .post("http://127.0.0.1:3000/tambah", {
-          nis: nis,
-          nama: nama,
-          jenis_kelamin: jenis_kelamin,
-          tempat_lahir: tempat_lahir,
-          tanggal_lahir: tanggal_lahir,
-          no_hp: no_hp,
-          alamat: alamat,
-          nama_ortu: nama_ortu
+        .post("http://127.0.0.1:3000/tambah", formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data' // Mengatur header untuk FormData
+          }
         })
         .then(() => {
           //redirect ke post index
@@ -157,12 +164,19 @@ export default {
         });
     }
 
+    //method untuk menangani perubahan file gambar
+    function onFileChange(event) {
+      const file = event.target.files[0];
+      post.gambar = file;
+    }
+
     //return
     return {
       post,
       validation,
       router,
       store,
+      onFileChange
     };
   },
 };

@@ -52,6 +52,15 @@
                                 <label for="nama_ortu" class="font-weight-bold mb-2">Nama Orang Tua</label>
                                 <input type="text" class="form-control" v-model="post.nama_ortu" placeholder="Masukkan Nama Orang Tua" />
                             </div>
+                            <div class="form-group mt-3">
+                                <label for="gambar" class="font-weight-bold mb-2">Gambar</label>
+                                <input
+                                  type="file"
+                                  v-on:change="onFileChange"
+                                  class="form-control"
+                                  accept="image/*"
+                                />
+                            </div>
                             <button type="submit" class="btn btn-primary mt-3">UPDATE</button>
                         </form>
                     </div>
@@ -67,98 +76,98 @@ import { useRouter, useRoute } from 'vue-router'
 import axios from 'axios'
 
 export default {
-    name: "EditPage",
-    setup() {
+  name: "EditPage",
+  setup() {
+    //state posts
+    const post = reactive({
+      nis: "",
+      nama: "",
+      jenis_kelamin: "",
+      tempat_lahir: "",
+      tanggal_lahir: "",
+      no_hp: "",
+      alamat: "",
+      nama_ortu: "",
+      gambar: null // Menambahkan state untuk menyimpan file gambar
+    })
 
-        //state posts
-        const post = reactive({
-            nis: "",
-            nama: "",
-            jenis_kelamin: "",
-            tempat_lahir: "",
-            tanggal_lahir: "",
-            no_hp: "",
-            alamat: "",
-            nama_ortu: ""
+    //state validation
+    const validation = ref([])
+
+    //vue router
+    const router = useRouter()
+
+    //vue route
+    const route = useRoute()
+
+    //mounted
+    onMounted(() => {
+      //get API from Backend
+      axios.get(`http://127.0.0.1:3000/tampil/${route.params.id}`)
+        .then(response => {
+          //assign state posts with response data
+          const postData = response.data.data[0];
+          post.nis = postData.nis;
+          post.nama = postData.nama;
+          post.jenis_kelamin = postData.jenis_kelamin;
+          post.tempat_lahir = postData.tempat_lahir;
+          post.tanggal_lahir = postData.tanggal_lahir;
+          post.no_hp = postData.no_hp;
+          post.alamat = postData.alamat;
+          post.nama_ortu = postData.nama_ortu;
+          // post.gambar = postData.gambar // Hapus baris ini
         })
-
-        //state validation
-        const validation = ref([])
-
-        //vue router
-        const router = useRouter()
-
-        //vue route
-        const route = useRoute()
-
-        //mounted
-        onMounted(() => {
-
-            //get API from Backend
-            axios.get(`http://127.0.0.1:3000/tampil/${route.params.id}`)
-                .then(response => {
-
-                    //assign state posts with response data
-                    const postData = response.data.data[0];
-                    post.nis = postData.nis;
-                    post.nama = postData.nama;
-                    post.jenis_kelamin = postData.jenis_kelamin;
-                    post.tempat_lahir = postData.tempat_lahir;
-                    post.tanggal_lahir = postData.tanggal_lahir;
-                    post.no_hp = postData.no_hp;
-                    post.alamat = postData.alamat;
-                    post.nama_ortu = postData.nama_ortu;
-
-                }).catch(error => {
-                    console.log(error.response.data)
-                })
-
+        .catch(error => {
+          console.log(error.response.data)
         })
+    })
 
-        //method update
-        function update() {
+    //method update
+    function update() {
+      let formData = new FormData();
+      formData.append('nis', post.nis);
+      formData.append('nama', post.nama);
+      formData.append('jenis_kelamin', post.jenis_kelamin);
+      formData.append('tempat_lahir', post.tempat_lahir);
+      formData.append('tanggal_lahir', post.tanggal_lahir);
+      formData.append('no_hp', post.no_hp);
+      formData.append('alamat', post.alamat);
+      formData.append('nama_ortu', post.nama_ortu);
 
-            let nis = post.nis;
-            let nama = post.nama;
-            let jenis_kelamin = post.jenis_kelamin;
-            let tempat_lahir = post.tempat_lahir;
-            let tanggal_lahir = post.tanggal_lahir;
-            let no_hp = post.no_hp;
-            let alamat = post.alamat;
-            let nama_ortu = post.nama_ortu;
+      // Periksa apakah ada file yang diunggah
+      if (post.gambar instanceof File) {
+        formData.append('gambar', post.gambar); // Jika ada, tambahkan file gambar ke FormData
+      }
 
-            axios.put(`http://127.0.0.1:3000/edit/${route.params.id}`, {
-                nis: nis,
-                nama: nama,
-                jenis_kelamin: jenis_kelamin,
-                tempat_lahir: tempat_lahir,
-                tanggal_lahir: tanggal_lahir,
-                no_hp: no_hp,
-                alamat: alamat,
-                nama_ortu: nama_ortu
-            }).then(() => {
 
-                //redirect ke post index
-                router.push({
-                    name: 'posts.index'
-                })
-
-            }).catch(error => {
-                //assign state validation with error 
-                validation.value = error.response.data;
-            })
-
+      axios.put(`http://127.0.0.1:3000/edit/${route.params.id}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
         }
-
-        //return
-        return {
-            post,
-            validation,
-            router,
-            update
-        }
-
+      }).then(() => {
+        router.push({ name: 'posts.index' });
+      }).catch(error => {
+        validation.value = error.response.data;
+      });
     }
 
+    //method untuk menangani perubahan file gambar
+    function onFileChange(event) {
+      const file = event.target.files[0];
+      if (file) {
+        post.gambar = file;
+      }
+    }
+
+
+    //return
+    return {
+      post,
+      validation,
+      router,
+      update,
+      onFileChange
+    }
+  }
 }
 </script>

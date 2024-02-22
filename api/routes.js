@@ -15,4 +15,5 @@ module.exports = function (app) {
     .put(jsonku.editData);
     app.route('/delete/:id')
     .delete(jsonku.deleteData)
+
 }

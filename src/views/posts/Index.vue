@@ -20,6 +20,7 @@
                                     <th scope="col">No HP</th>
                                     <th scope="col">Alamat</th>
                                     <th scope="col">Nama Orang Tua</th>
+                                    <th scope="col">Gambar</th> <!-- Tambahkan kolom untuk menampilkan gambar -->
                                     <th scope="col">Options</th>
                                 </tr>
                             </thead>
@@ -34,6 +35,7 @@
                                     <td>{{ siswa.no_hp }}</td>
                                     <td>{{ siswa.alamat }}</td>
                                     <td>{{ siswa.nama_ortu }}</td>
+                                    <td><img :src="'http://localhost:3000/uploads/' + siswa.gambar" alt="IMG" style="max-width: 100px;"></td> <!-- Menampilkan gambar siswa -->
                                     <td class="text-center">
                                         <router-link :to="{ name: 'posts.edit', params: { id: siswa.id } }" class="btn btn-sm btn-primary me-2">EDIT</router-link>
                                         <button @click.prevent="postDelete(siswa.id)" class="btn btn-sm btn-danger ml-1">DELETE</button>
