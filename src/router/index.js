@@ -28,11 +28,11 @@ const routes = [
         name: 'LoginPage',
         component: () => import( '@/views/LoginPage.vue')
     },
-    // {
-    //     path: '/register',
-    //     name: 'RegisterPage',
-    //     component: () => import( '@/views/RegisterPage.vue')
-    // }
+    {
+        path: '/register',
+        name: 'RegisterPage',
+        component: () => import( '@/views/RegisterPage.vue')
+    }
 ]
 
 //create router
