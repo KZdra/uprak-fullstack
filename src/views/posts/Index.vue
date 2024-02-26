@@ -35,7 +35,7 @@
                                     <td>{{ siswa.no_hp }}</td>
                                     <td>{{ siswa.alamat }}</td>
                                     <td>{{ siswa.nama_ortu }}</td>
-                                    <td><img :src="'http://localhost:3000/uploads/' + siswa.gambar" alt="IMG" style="max-width: 100px;"></td> <!-- Menampilkan gambar siswa -->
+                                    <td><img :src="'http://192.168.31.199:3000/uploads/' + siswa.gambar" alt="IMG" style="max-width: 100px;"></td> <!-- Menampilkan gambar siswa -->
                                     <td class="text-center">
                                         <router-link :to="{ name: 'posts.edit', params: { id: siswa.id } }" class="btn btn-sm btn-primary me-2">EDIT</router-link>
                                         <button @click.prevent="postDelete(siswa.id)" class="btn btn-sm btn-danger ml-1">DELETE</button>
@@ -63,7 +63,7 @@ export default {
     },
     methods: {
         postDelete(id) {
-            axios.delete(`http://127.0.0.1:3000/delete/${id}`)
+            axios.delete(`http://192.168.31.199:3000/delete/${id}`)
                 .then(response => {
                     console.log('Berhasil menghapus siswa dengan id', id ,response);
                     // reload
@@ -83,7 +83,7 @@ export default {
     },
    
     mounted() {
-        axios.get('http://127.0.0.1:3000/tampil')
+        axios.get('http://192.168.31.199:3000/tampil')
             .then((response) => this.setSiswaList(response.data.data))
 
             .catch((error) => console.log("gagal", error))

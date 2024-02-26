@@ -112,7 +112,7 @@ export default {
     // Mounted
     onMounted(() => {
       // Get API from Backend
-      axios.get(`http://127.0.0.1:3000/tampil/${route.params.id}`)
+      axios.get(`http://192.168.31.199:3000/tampil/${route.params.id}`)
         .then(response => {
           // Assign state posts with response data
           const postData = response.data.data[0];
@@ -159,7 +159,7 @@ export default {
         formData.append('gambar', null);
       }
 
-      axios.patch(`http://127.0.0.1:3000/patch/${route.params.id}`, formData, {
+      axios.patch(`http://192.168.31.199:3000/patch/${route.params.id}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }

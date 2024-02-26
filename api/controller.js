@@ -210,3 +210,47 @@ exports.deleteData = function (req, res) {
 }
 
 
+exports.register = function(req, res) {
+    var { name, username, password } = req.body;
+    
+    // Check if username already exists
+    connection.query('SELECT * FROM users WHERE username = ?', [username], function(error, rows, fields) {
+        if (error) {
+            console.error(error);
+            return res.status(500).json({ status: false, message: 'Internal Server Error' });
+        }
+        
+        if (rows.length > 0) {
+            return res.status(400).json({ status: false, message: 'Username already exists' });
+        } else {
+            // Insert new user
+            connection.query('INSERT INTO users (name, username, password) VALUES (?, ?, ?)', [name, username, password], function(err, result) {
+                if (err) {
+                    console.error(err);
+                    return res.status(500).json({ status: false, message: 'Internal Server Error' });
+                }
+                
+                return res.status(201).json({ status: true, message: 'User registered successfully' });
+            });
+        }
+    });
+};
+
+// Login function
+exports.login = function(req, res) {
+    var { username, password } = req.body;
+    
+    // Find user by username and password
+    connection.query('SELECT * FROM users WHERE username = ? AND password = ?', [username, password], function(error, rows, fields) {
+        if (error) {
+            console.error(error);
+            return res.status(500).json({ status: false, message: 'Internal Server Error' });
+        }
+        
+        if (rows.length > 0) {
+            return res.status(200).json({ status: true, message: 'Login successful' });
+        } else {
+            return res.status(401).json({ status: false, message: 'Invalid username or password' });
+        }
+    });
+};

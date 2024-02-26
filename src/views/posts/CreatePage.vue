@@ -147,7 +147,7 @@ export default {
       formData.append('gambar', post.gambar); // Mengirimkan file gambar
 
       axios
-        .post("http://127.0.0.1:3000/tambah", formData, {
+        .post("http://192.168.31.199:3000/tambah", formData, {
           headers: {
             'Content-Type': 'multipart/form-data' // Mengatur header untuk FormData
           }
