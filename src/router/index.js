@@ -22,7 +22,17 @@ const routes = [
         path: '/posts/edit/:id',
         name: 'posts.edit',
         component: () => import( /* webpackChunkName: "post.edit" */ '@/views/posts/EditPage.vue')
-    }
+    },
+    {
+        path: '/login',
+        name: 'LoginPage',
+        component: () => import( '@/views/LoginPage.vue')
+    },
+    // {
+    //     path: '/register',
+    //     name: 'RegisterPage',
+    //     component: () => import( '@/views/RegisterPage.vue')
+    // }
 ]
 
 //create router

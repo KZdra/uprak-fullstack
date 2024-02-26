@@ -17,5 +17,7 @@ module.exports = function (app) {
     .patch(jsonku.patchData);
     app.route('/delete/:id')
     .delete(jsonku.deleteData);
+  app.route("/register").post(jsonku.register);
+  app.route("/login").post(jsonku.login);
 
 }
